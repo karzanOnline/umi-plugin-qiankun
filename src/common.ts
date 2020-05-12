@@ -3,9 +3,9 @@
  * @since 2019-06-20
  */
 
+import { cloneDeep } from 'lodash';
 import pathToRegexp from 'path-to-regexp';
 import { IRoute } from 'umi-types';
-import { cloneDeep } from 'lodash';
 
 import { keepOriginalRoutesOption } from './types';
 
@@ -36,22 +36,22 @@ function testPathWithStaticPrefix(pathPrefix: string, realPath: string) {
 }
 
 function testPathWithDynamicRoute(dynamicRoute: string, realPath: string) {
-  return !!pathToRegexp(dynamicRoute, { strict: true }).exec(realPath);
+  return !!pathToRegexp(dynamicRoute, { strict: true, end: false }).exec(realPath);
 }
 
 export function testPathWithPrefix(pathPrefix: string, realPath: string) {
   return testPathWithStaticPrefix(pathPrefix, realPath) || testPathWithDynamicRoute(pathPrefix, realPath);
 }
 
-export const recursiveCoverRouter = (_source: Array<IRoute>, _nameSpacePath: string) =>
-  _source.map((router: IRoute) => {
+const recursiveCoverRouter = (source: Array<IRoute>, nameSpacePath: string) =>
+  source.map((router: IRoute) => {
     if (router.routes) {
-      recursiveCoverRouter(router.routes, _nameSpacePath);
+      recursiveCoverRouter(router.routes, nameSpacePath);
     }
     if (router.path !== '/' && router.path) {
       return {
         ...router,
-        path: `${_nameSpacePath}${router.path}`,
+        path: `${nameSpacePath}${router.path}`,
       };
     }
     return router;

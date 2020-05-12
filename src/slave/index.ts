@@ -1,19 +1,20 @@
 /*  eslint-disable no-param-reassign */
 import address from 'address';
 import assert from 'assert';
+import { isString } from 'lodash';
 import { join } from 'path';
 // eslint-disable-next-line import/no-unresolved
 import { IApi } from 'umi-types';
 import webpack from 'webpack';
-import { isString } from 'lodash';
 
-import { defaultSlaveRootId, addSpecifyPrefixedRoute } from '../common';
+import { addSpecifyPrefixedRoute, defaultSlaveRootId } from '../common';
 import { Options } from '../types';
 
 const localIpAddress = process.env.USE_REMOTE_IP ? address.ip() : 'localhost';
 
 export default function(api: IApi, options: Options) {
-  const { registerRuntimeKeyInIndex = false, keepOriginalRoutes = false } = options || {};
+  const { registerRuntimeKeyInIndex = false, keepOriginalRoutes = false, shouldNotModifyRuntimePublicPath = false } =
+    options || {};
   api.addRuntimePlugin(require.resolve('./runtimePlugin'));
   if (!registerRuntimeKeyInIndex) {
     api.addRuntimePluginKey('qiankun');
@@ -34,9 +35,9 @@ export default function(api: IApi, options: Options) {
   }));
 
   // 如果没有手动关闭 runtimePublicPath，则直接使用 qiankun 注入的 publicPath
-  if (api.config.runtimePublicPath !== false) {
+  if (api.config.runtimePublicPath !== false && !shouldNotModifyRuntimePublicPath) {
     api.modifyPublicPathStr(
-      `window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__ || "${
+      `window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__ || window.publicPath || "${
         // 开发阶段 publicPath 配置无效，默认为 /
         process.env.NODE_ENV !== 'development' ? api.config.publicPath || '/' : '/'
       }"`,

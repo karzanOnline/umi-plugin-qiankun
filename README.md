@@ -1,6 +1,8 @@
 # @umijs/plugin-qiankun
 
-Umi plugin for [qiankun](https://github.com/umijs/qiankun).
+Umi@2 plugin for [qiankun](https://github.com/umijs/qiankun).
+
+Umi@3 相应的 qiankun 插件请移步[这里](https://github.com/umijs/plugins/tree/master/packages/plugin-qiankun)
 
 [![NPM version](https://img.shields.io/npm/v/@umijs/plugin-qiankun.svg?style=flat)](https://npmjs.org/package/@umijs/plugin-qiankun) [![Build Status](https://img.shields.io/travis/umijs/umi-plugin-qiankun.svg?style=flat)](https://travis-ci.org/umijs/umi-plugin-qiankun) [![NPM downloads](http://img.shields.io/npm/dm/@umijs/plugin-qiankun.svg?style=flat)](https://npmjs.org/package/@umijs/plugin-qiankun)
 
@@ -236,8 +238,8 @@ PORT=8081
 
 由于方案基于 react hook，所以只能在 functional component 中使用相关 api，无法在 class component 中使用。
 
-1. 约定父应用中在 `src/rootExports.js` 里 export 内容
-2. 子应用中通过 `import { useRootExports } from 'umi'; const rootExports = useRootExports();` 取到
+1. 约定父应用中在 `src/rootExports.js` 里 export 内容。参考 [rootExports](https://github.com/umijs/umi-plugin-qiankun/blob/master/examples/master/rootExports.js)
+2. 子应用中通过 `import { useRootExports } from 'umi'; const rootExports = useRootExports();` 取到。参考 [useRootExports](https ://github.com/umijs/umi-plugin-qiankun/blob/master/examples/app1/pages/index.js#L1)
 
 ## API
 
@@ -251,6 +253,7 @@ PORT=8081
 | jsSandbox | 是否启用 js 沙箱 | boolean | 否 | false |
 | prefetch | 是否启用 prefetch 特性 | boolean | 否 | true |
 | defer | 是否异步渲染，比如子应用的渲染容器依赖主应用生成的节点，而主应用生成该节点的过程是异步的。<br />当该配置开启的时候，需要使用 `import { qiankunStart } from 'umi'` api 通知 qiankun 启动。参考 [example](https://github.com/umijs/umi-plugin-qiankun/blob/master/examples/master/models/base.js#L35) | boolean | 否 | false |
+| fetch | 用于拦截 htmlEntry 静态资源 fetch 时的请求 | function | 否 | fetch |
 
 #### <a name="app">App</a>
 
@@ -267,7 +270,7 @@ PORT=8081
 
 | 配置 | 说明 | 类型 | 是否必填 | 默认值 |
 | --- | --- | --- | --- | --- |
-| keepOriginalRoutes | 子应用通过设置此配置，在编译时会按照 keepOriginalRoutes 的值添加一份 route 的快照(如果值为 true 将默认取 packageName)，并将快照路由前缀改为/\${keepOriginalRoutes}添加到 routes | boolean | string | 否 | false |
+| keepOriginalRoutes | 子应用通过设置此配置，在编译时会按照 keepOriginalRoutes 的值添加一份 route 的快照(如果值为 true 将默认取 packageName)，并将快照路由前缀改为/\${keepOriginalRoutes}添加到 routes | boolean \| string | 否 | false |
 
 ## Roadmap
 
